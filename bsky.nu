@@ -15,13 +15,17 @@ export def to-at-url [url: string] {
         })
     }
 
-    let extracted = $extracted | first
+    let post = $extracted | first
+    let did = get-profile $post.handle | get did
 
     # Construct the AT URL
-    $"at://($extracted.handle)/app.bsky.feed.post/($extracted.post_id)"
+    $"at://($did)/app.bsky.feed.post/($post.post_id)"
 }
 
 export def get-post-thread [at_uri: string] {
     http get $"($API_BASE)/app.bsky.feed.getPostThread?uri=($at_uri)" | get thread
 }
 
+export def get-profile [handle: string] {
+    http get $"($API_BASE)/app.bsky.actor.getProfile?actor=($handle)"
+}
